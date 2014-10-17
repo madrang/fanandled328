@@ -78,6 +78,7 @@ void setFanSpeed(byte fanSpeed) {
 void fanSensorISR() {
   pulseCount++;
   
+  //If less then one second since last reading, return.
   unsigned long currentTime = millis();
   if (lastRPMCheck + 1000 > currentTime) {
     return;
@@ -95,23 +96,6 @@ void fanSensorISR() {
 
 int getFanRPM() {
   return fanRPM;
-  
-  unsigned long currentTime = micros();
-  
-  //Overflow protect
-  if (lastRPMCheck > currentTime) {
-    pulseCount = 0;
-    lastRPMCheck = currentTime;
-    return -1;
-  }
-  
-  float pulseTime = (float)(currentTime - lastRPMCheck) / (float)pulseCount;
-  pulseTime *= 2;
-  
-  pulseCount = 0;
-  lastRPMCheck = currentTime;
-  
-  return 1000000 / pulseTime;
 }
 
 void printFanInfo() {
